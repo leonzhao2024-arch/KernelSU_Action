@@ -243,6 +243,9 @@ jobs:
                 rm -f scripts/drvgen/drvgen.mk
         mkdir -p arch/arm64/boot/dts/k69v1_64
         touch arch/arm64/boot/dts/k69v1_64/cust.dtsi
+        sed -i 's/^dtbs:/# dtbs:/' arch/arm64/boot/dts/Makefile
+        sed -i 's/^dtbo_check:/# dtbo_check:/' Makefile
+        sed -i 's/^dtbs: /# dtbs: /' Makefile
         
     - name: Setup ccache
       if: env.ENABLE_CCACHE == 'true'
