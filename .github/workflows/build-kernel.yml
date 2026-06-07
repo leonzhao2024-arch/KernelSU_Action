@@ -240,12 +240,12 @@ jobs:
         echo "CONFIG_CC_STACKPROTECTOR_NONE=y" >> arch/${{ env.ARCH }}/configs/${{ env.KERNEL_CONFIG }}
         echo "# CONFIG_CC_STACKPROTECTOR is not set" >> arch/${{ env.ARCH }}/configs/${{ env.KERNEL_CONFIG }}
         echo "# CONFIG_CC_STACKPROTECTOR_STRONG is not set" >> arch/${{ env.ARCH }}/configs/${{ env.KERNEL_CONFIG }}
-                rm -f scripts/drvgen/drvgen.mk
+        rm -f scripts/drvgen/drvgen.mk
         mkdir -p arch/arm64/boot/dts/k69v1_64
         touch arch/arm64/boot/dts/k69v1_64/cust.dtsi
-        sed -i 's/^dtbs:/# dtbs:/' arch/arm64/boot/dts/Makefile
-        sed -i 's/^dtbo_check:/# dtbo_check:/' Makefile
-        sed -i 's/^dtbs: /# dtbs: /' Makefile
+        # 彻底禁用 dtbs 编译
+        echo "dtbs: ;" >> arch/arm64/boot/dts/Makefile
+        echo "dtbo_check: ;" >> Makefile
         
     - name: Setup ccache
       if: env.ENABLE_CCACHE == 'true'
