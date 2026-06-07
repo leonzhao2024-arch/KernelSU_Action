@@ -254,29 +254,29 @@ jobs:
         key: build-kernel-${{ env.DEVICE }}${{ env.LOCALVERSION }}${{ env.UPLOADNAME }}
         max-size: 2G
 
-       - name: Build kernel
-      run: |
-        cd $GITHUB_WORKSPACE/kernel_workspace/android-kernel
-        export PATH=$GITHUB_WORKSPACE/kernel_workspace/clang-aosp/bin:$PATH
-        export KBUILD_BUILD_HOST=Github-Action
-        export KBUILD_BUILD_USER=$(echo ${{ github.actor }} | tr A-Z a-z)
-        export LD=ld.lld
-        export AR=llvm-ar
-        export NM=llvm-nm
-        export OBJCOPY=llvm-objcopy
-        export OBJDUMP=llvm-objdump
-        export READELF=llvm-readelf
-        if [ ! -z ${{ env.KSU_EXPECTED_SIZE }} ] && [ ! -z ${{ env.KSU_EXPECTED_HASH }} ]; then
-          export KSU_EXPECTED_SIZE=${{ env.KSU_EXPECTED_SIZE }}
-          export KSU_EXPECTED_HASH=${{ env.KSU_EXPECTED_HASH }}
-        fi
-        make -j$(nproc --all) LLVM=1 LLVM_IAS=1 O=out ARCH=arm64 ${{ env.CUSTOM_CMDS }} ${{ env.EXTRA_CMDS }} ${{ env.GCC_64 }} ${{ env.GCC_32 }} ${{ env.KERNEL_CONFIG }} vmlinux
-        if [ ${{ env.ENABLE_CCACHE }} = true ]; then
-            make -j$(nproc --all) LLVM=1 LLVM_IAS=1 CC="ccache clang" O=out ARCH=arm64 ${{ env.CUSTOM_CMDS }} ${{ env.EXTRA_CMDS }} ${{ env.GCC_64 }} ${{ env.GCC_32 }} vmlinux
-        else
-            make -j$(nproc --all) LLVM=1 LLVM_IAS=1 O=out ARCH=arm64 ${{ env.CUSTOM_CMDS }} ${{ env.EXTRA_CMDS }} ${{ env.GCC_64 }} ${{ env.GCC_32 }} vmlinux
-        fi
-
+           - name: Build kernel
+             run: |
+              cd $GITHUB_WORKSPACE/kernel_workspace/android-kernel
+              export PATH=$GITHUB_WORKSPACE/kernel_workspace/clang-aosp/bin:$PATH
+              export KBUILD_BUILD_HOST=Github-Action
+              export KBUILD_BUILD_USER=$(echo ${{ github.actor }} | tr A-Z a-z)
+              export LD=ld.lld
+              export AR=llvm-ar
+              export NM=llvm-nm
+              export OBJCOPY=llvm-objcopy
+              export OBJDUMP=llvm-objdump
+              export READELF=llvm-readelf
+              if [ ! -z ${{ env.KSU_EXPECTED_SIZE }} ] && [ ! -z ${{ env.KSU_EXPECTED_HASH }} ]; then
+               export KSU_EXPECTED_SIZE=${{ env.KSU_EXPECTED_SIZE }}
+               export KSU_EXPECTED_HASH=${{ env.KSU_EXPECTED_HASH }}
+              fi
+              make -j$(nproc --all) LLVM=1 LLVM_IAS=1 O=out ARCH=arm64 ${{ env.CUSTOM_CMDS }} ${{ env.EXTRA_CMDS }} ${{ env.GCC_64 }} ${{ env.GCC_32 }} ${{ env.KERNEL_CONFIG }} vmlinux
+              if [ ${{ env.ENABLE_CCACHE }} = true ]; then
+              make -j$(nproc --all) LLVM=1 LLVM_IAS=1 CC="ccache clang" O=out ARCH=arm64 ${{ env.CUSTOM_CMDS }} ${{ env.EXTRA_CMDS }} ${{ env.GCC_64 }} ${{ env.GCC_32 }} vmlinux
+              else
+              make -j$(nproc --all) LLVM=1 LLVM_IAS=1 O=out ARCH=arm64 ${{ env.CUSTOM_CMDS }} ${{ env.EXTRA_CMDS }} ${{ env.GCC_64 }} ${{ env.GCC_32 }} vmlinux
+              fi
+        
     - name: Check a kernel output files
       run: |
        cd $GITHUB_WORKSPACE/kernel_workspace
